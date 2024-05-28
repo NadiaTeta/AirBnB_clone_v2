@@ -280,7 +280,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         # determine if key is present
-        if key != in storage.all():
+        if key != storage.all():
             print("** no instance found **")
             return
 
