@@ -126,7 +126,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         #create Place city_id="0001" user_id="0001" name="My_little_house"
-        all_list = args.split("")
+        all_list = args.split()
 
         new_instance = eval(class_name)()
 
