@@ -116,15 +116,16 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, args):
         """ Create an object of any class"""
         try:
+            if not args:
+                print("** class name missing **")
+                return
             class_name = args.split()[0]
         except IndexError:
             pass
-        if not class_name:
-            print("** class name missing **")
-            return
-        elif class_name not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
+            if class_name not in self.classes:
+                print("** class doesn't exist **")
+                return
+            
         #create Place city_id="0001" user_id="0001" name="My_little_house"
         all_list = args.split()
 
