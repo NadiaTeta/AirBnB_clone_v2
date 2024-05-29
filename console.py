@@ -129,7 +129,7 @@ class HBNBCommand(cmd.Cmd):
         #create Place city_id="0001" user_id="0001" name="My_little_house"
         all_list = args.split()
 
-        new_instance = eval(class_name)()
+        new_instance = self.classes[class_name]()
 
         for i in range(1, len(all_list)):
             key, value = tuple(all_list[i].split("="))
@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
                 try:
                     value = eval(value)
                 except Exception:
-                    print(f"** couldnt evaluate {value}")
+                    print(f"** couldn't evaluate {value}")
                     pass
             if hasattr(new_instance, key):
                 setattr(new_instance, key, value)
