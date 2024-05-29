@@ -2,5 +2,5 @@ create State name="Califonia"
 create State name="Arizona"
 all state
 
-create Place city_id="0001" user_id="0001" name="My_little_house" number_rooms=4 
-all Place 
+create Place city_id="0001" user_id="0001" name="My_little_house"
+create User email="test@example.com" password="password"
