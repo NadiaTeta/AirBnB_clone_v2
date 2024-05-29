@@ -127,26 +127,32 @@ class HBNBCommand(cmd.Cmd):
                 return
             
         #create Place city_id="0001" user_id="0001" name="My_little_house"
-        all_list = args.split()
+            kwargs = {}
+            commands = arg.split(" ")
+            for i in range(1, len(commands)):
 
-        new_instance = self.classes[class_name]()
+                key = commands[i].split("=")[0]
+                value = commands[i].split("=")[1]
+                #key, value = tuple(commands[i].split("="))
+                if value.startswith('"'):
+                    value = value.strip('"').replace("_", " ")
+                else:
+                    try:
+                        value = eval(value)
+                    except (SyntaxError, NameError):
+                        continue
+                kwargs[key] = value
 
-        for i in range(1, len(all_list)):
-            key, value = tuple(all_list[i].split("="))
-            if value.startswith(""):
-                value.strip('"').replace("_", " ")
+            if kwargs == {}:
+                new_instance = eval(class_name)()
             else:
-                try:
-                    value = eval(value)
-                except Exception:
-                    print(f"** couldn't evaluate {value}")
-                    pass
-            if hasattr(new_instance, key):
-                setattr(new_instance, key, value)
-        
-        storage.new(new_instance)
-        print(new_instance.id)
-        new_instance.save()
+                new_instance = eval(class_name)(**kwargs)
+            storage.new(new_instance)
+            print(new_instance.id)
+            storage.save()
+        except ValueError:
+            print(ValueError)
+            return
 
     def help_create(self):
         """ Help information for the create method """
