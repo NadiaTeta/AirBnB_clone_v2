@@ -65,8 +65,7 @@ class TestHBNBCommand(unittest.TestCase):
         # Test if class doesn't exist
         with patch("sys.stdout", new=StringIO()) as f:
             self.HBNB.onecmd("create asdfsfsd")
-            self.assertEqual(
-                "** class doesn't exist **\n", f.getvalue())
+            self.assertEqual("** class doesn't exist **\n", f.getvalue())
 
     def test_create_command_validity(self):
         """Test create command."""
@@ -131,20 +130,20 @@ class TestHBNBCommand(unittest.TestCase):
         """Test create command with kwargs."""
         # Test create command with additional key-value pairs
         with patch("sys.stdout", new=StringIO()) as f:
-            call = (f'create Place city_id="0001" name="My_house" number_rooms=4 latitude=37.77 longitude=43.434')  # noqa
-            self.HBNB.onecmd(call)
-            pl = f.getvalue().strip()
-         # Test if the created instance and kwargs are in the
-         #    output of "all" command
+            self.HBNB.onecmd('create Place city_id="0001" name="My_house" number_rooms=4 latitude=37.77 longitude=43.434')
+            output = f.getvalue().strip()
+            instance_id = output # Capture the created instance ID
+         
+        # Retrieve the created instance
         with patch("sys.stdout", new=StringIO()) as f:
-            self.HBNB.onecmd("all Place")
-            output = f.getvalue()
-            self.assertIn(pl, output)
-            self.assertIn("'city_id': '0001'", output)
-            self.assertIn("'name': 'My house'", output)
-            self.assertIn("'number_rooms': 4", output)
-            self.assertIn("'latitude': 37.77", output)
-            self.assertIn("'longitude': 43.434", output)
+            self.HBNB.onecmd(f'show Place {instance_id}')
+            output = f.getvalue().strip()
+
+        self.assertIn("'city_id': '0001'", output)
+        self.assertIn("'name': 'My house'", output)
+        self.assertIn("'number_rooms': 4", output)
+        self.assertIn("'latitude': 37.77", output)
+        self.assertIn("'longitude': 43.434", output)
 
 
 if __name__ == "__main__":

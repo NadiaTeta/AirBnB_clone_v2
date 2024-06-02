@@ -114,45 +114,43 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
-        try:
-            if not args:
-                print("** class name missing **")
-                return
-            class_name = args.split()[0]
-        except IndexError:
-            pass
-            if class_name not in self.classes:
-                print("** class doesn't exist **")
-                return
-            
-        #create Place city_id="0001" user_id="0001" name="My_little_house"
-            kwargs = {}
-            commands = arg.split(" ")
-            for i in range(1, len(commands)):
+        """Create an object of any class."""
+    if not args:
+        print("** class name missing **")
+        return
 
-                key = commands[i].split("=")[0]
-                value = commands[i].split("=")[1]
-                #key, value = tuple(commands[i].split("="))
-                if value.startswith('"'):
-                    value = value.strip('"').replace("_", " ")
-                else:
-                    try:
-                        value = eval(value)
-                    except (SyntaxError, NameError):
-                        continue
-                kwargs[key] = value
+    args_list = args.split()
+    class_name = args_list[0]
 
-            if kwargs == {}:
-                new_instance = eval(class_name)()
+    if class_name not in Self.classes:
+        print("** class doesn't exist **")
+        return
+
+    # Initialize the new instance of the class
+    new_instance = self.classes[class_name]()
+
+    # Parse the rest of the arguments for attributes
+    for arg in args_list[1:]:
+        if "=" in arg:
+            key, value = arg.split("=", 1)
+            if value.startswith('"') and value.endswith('"'):
+                value = value.strip('"').replace("_", " ")
             else:
-                new_instance = eval(class_name)(**kwargs)
-            storage.new(new_instance)
-            print(new_instance.id)
-            storage.save()
-        except ValueError:
-            print(ValueError)
-            return
+                try:
+                    value = eval(value)
+                except Exception:
+                    print(f"** couldn't evaluate {value} **")
+                    continue
+
+            # Set the attribute if it's valid for the instance
+            if hasattr(new_instance, key):
+                setattr(new_instance, key, value)
+
+    # Save the new instance to storage
+    new_instance.save()
+    storage.new(new_instance)
+    print(new_instance.id)
+
 
     def help_create(self):
         """ Help information for the create method """
