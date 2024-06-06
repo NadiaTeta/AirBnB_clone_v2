@@ -1,17 +1,31 @@
 #!/usr/bin/env bash
-# Install Nginx if not already installed
+#web_static development
+
 sudo apt-get -y update
 sudo apt-get -y upgrade
 sudo apt-get -y install nginx
-
-# create folders
 sudo mkdir -p /data/web_static/releases/test /data/web_static/shared
-#create a fake html file
-echo "This is a test" | sudo tee /data/web_static/releases/test/index.html
-# create symbolic link
-sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+echo "Hello, this is a test HTML file." | sudo tee /data/web_static/releases/test/index.html
+# Adding the new configuration for /hbnb_static/0-index.html
+echo "<!DOCTYPE html>
+<html lang=\"en\">
+    <head>
+        <meta charset=\"UTF-8\" />
+        <title>AirBnB clone</title>
+    </head>
+    <body style=\"margin: 0px; padding: 0px;\">
+        <header style=\"height: 70px; width: 100%; background-color: #FF0000\">
+        </header>
 
-# give ownership
-sudo chown -hR ubuntu:ubuntu /data/
-sudo sed -i '38i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n' /etc/nginx/sites-available/default
-sudo service nginx start
+        <footer style=\"position: absolute; left: 0; bottom: 0; height: 60px; width: 100%; background-color: #00FF00; text-align: center; overflow: hidden;\">
+            <p style=\"line-height: 60px; margin: 0px;\">Holberton School</p>
+        </footer>
+    </body>
+</html>" | sudo tee /data/web_static/releases/test/0-index.html
+# End of new configuration
+
+sudo rm -rf /data/web_static/current
+sudo ln -s /data/web_static/releases/test/ /data/web_static/current
+sudo chown -R ubuntu:ubuntu /data/
+sudo sed -i '44i \\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
+sudo service nginx restart
