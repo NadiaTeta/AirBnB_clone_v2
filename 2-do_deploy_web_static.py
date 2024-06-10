@@ -11,7 +11,7 @@ env.hosts = ['34.203.199.175', '3.90.190.202']
 
 def do_deploy(archive_path):
     """distributes an archive to the web servers"""
-    if exists(archive_path) is False:
+    if not exists(archive_path) is False:
         return False
     try:
         file_n = archive_path.split("/")[-1]
