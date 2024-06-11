@@ -1,36 +1,31 @@
 #!/usr/bin/env bash
-# Prepare my web servers
+#web_static development
 
-# Update package list and install nginx
-sudo apt-get update
+sudo apt-get -y update
+sudo apt-get -y upgrade
 sudo apt-get -y install nginx
+sudo mkdir -p /data/web_static/releases/test /data/web_static/shared
+echo "Hello, this is a test HTML file." | sudo tee /data/web_static/releases/test/index.html
+# Adding the new configuration for /hbnb_static/0-index.html
+echo "<!DOCTYPE html>
+<html lang=\"en\">
+    <head>
+        <meta charset=\"UTF-8\" />
+        <title>AirBnB clone</title>
+    </head>
+    <body style=\"margin: 0px; padding: 0px;\">
+        <header style=\"height: 70px; width: 100%; background-color: #FF0000\">
+        </header>
 
-# Directories to be created
-directories=("/data/web_static/releases/test" "/data/web_static/shared/")
+        <footer style=\"position: absolute; left: 0; bottom: 0; height: 60px; width: 100%; background-color: #00FF00; text-align: center; overflow: hidden;\">
+            <p style=\"line-height: 60px; margin: 0px;\">Holberton School</p>
+        </footer>
+    </body>
+</html>" | sudo tee /data/web_static/releases/test/0-index.html
+# End of new configuration
 
-# Create directories
-for directory in "${directories[@]}"; do
-  sudo mkdir -p "$directory"
-done
-
-# Create a test HTML file
-echo "<html>
-  <head>
-  </head>
-  <body>
-    <h1>Holberton School</h1>
-  </body>
-</html>" | sudo tee /data/web_static/releases/test/index.html
-
-# Create a symbolic link /data/web_static/current linked to /data/web_static/releases/test/ folder
-sudo ln --symbolic --force /data/web_static/releases/test /data/web_static/current
-
-# Apply ownership recursively to the /data/ folder
-sudo chown -R ubuntu:ubuntu /data/
-
-# Update Nginx configuration to serve the content
-sudo sed -i '/listen 80 default_server;/a \\n    location /hbnb_static {\n        alias /data/web_static/current/;\n        index index.html;\n    }' /etc/nginx/sites-available/default
-
-# Restart Nginx to apply changes
+sudo rm -rf /data/web_static/current
+sudo ln -s /data/web_static/releases/test/ /data/web_static/current
+sudo chown -R tetabianca:tetabianca /data/
+sudo sed -i '44i \\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
 sudo service nginx restart
-
